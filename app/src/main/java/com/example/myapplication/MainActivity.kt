@@ -32,7 +32,7 @@ class MainActivity : ComponentActivity() {
                         }
                     )
                 }) { innerPadding ->
-                    Cards(modifier=Modifier.padding(innerPadding))
+                        Cards(modifier=Modifier.padding(innerPadding))
                 }
             }
         }
