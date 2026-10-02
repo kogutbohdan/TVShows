@@ -10,9 +10,11 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.myapplication.view_models.CardsViewModel
 
 @Composable
-fun Filters(modifier:Modifier=Modifier,changeFilter:(String)->Unit){
+fun Filters(modifier:Modifier=Modifier,vm: CardsViewModel = viewModel()){
 	val scroll=rememberScrollState()
 
 	val genres=listOf(
@@ -44,7 +46,7 @@ fun Filters(modifier:Modifier=Modifier,changeFilter:(String)->Unit){
 	Row(modifier=modifier.horizontalScroll(scroll),
 		horizontalArrangement=Arrangement.spacedBy(5.dp)){
 		for(genre in genres){
-			Button(onClick={changeFilter(genre)}){
+			Button(onClick={vm.setCardsState(filter = genre)}){
 				Text(genre)
 			}
 		}

@@ -16,11 +16,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import android.util.Log
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myapplication.my_composable.Card
 import com.example.myapplication.my_composable.Filters
 import com.example.myapplication.my_packets.Show
 import com.example.myapplication.my_packets.ShowResponse
 import com.example.myapplication.my_packets.Rating
+import com.example.myapplication.view_models.CardsViewModel
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.request.get
@@ -33,7 +35,7 @@ import io.ktor.client.statement.bodyAsText
 
 
 @Composable
-fun Cards(modifier:Modifier=Modifier){
+fun Cards(modifier:Modifier=Modifier,vm: CardsViewModel = viewModel()){
 	val client=remember{
 		HttpClient(CIO){
 			install(ContentNegotiation) {
@@ -46,43 +48,40 @@ fun Cards(modifier:Modifier=Modifier){
 
 
 	var response by remember{mutableStateOf<List<Show>?>(null)}
-	var shows by remember{mutableStateOf<List<Show>?>(null)}
-	var interval by remember{mutableStateOf(listOf(0,20))}
-	var filter by remember{mutableStateOf<String>("All")}
 	val scrollState=rememberScrollState()
 
 	LaunchedEffect(Unit){
 		try{
-			response=client.get("https://api.tvmaze.com/shows?pages=0").body<List<Show>>()
+			response=client.get("https://api.tvmaze.com/shows?pages=1").body<List<Show>>()
 		}catch(e:Exception){
 			Log.e("TVSHOWS", "ERROR", e)
 			response=null
 		}
 	}
 
-	LaunchedEffect(response,filter){
-		if(filter!="All"){
-			shows=response?.filter{
-				filter in it.genres
-			}
+	LaunchedEffect(response, vm.cardsState.filter){
+		if(vm.cardsState.filter!="All"){
+			vm.setCardsState(
+                shows = response?.filter {
+                    vm.cardsState.filter in it.genres
+                }
+            )
 		}else{
-			shows=response
+			vm.setCardsState(shows=response)
 		}
 	}
 	
 	Column(modifier=modifier){
-		Filters(changeFilter={
-			filter=it
-		})
+		Filters()
 		Column(horizontalAlignment=Alignment.CenterHorizontally,
 			verticalArrangement=Arrangement.spacedBy(16.dp),
 			modifier=Modifier.fillMaxWidth().verticalScroll(scrollState)){
 	
-			val currentResponse = shows
+			val currentResponse = vm.cardsState.shows
 			
 
 			if(currentResponse!=null){
-				for(show in currentResponse.subList(interval[0],minOf(interval[1],currentResponse.size))){
+				for(show in currentResponse.subList(vm.cardsState.interval[0],minOf(vm.cardsState.interval[1],currentResponse.size))){
 					Card(show)
 				}
 			}else{
