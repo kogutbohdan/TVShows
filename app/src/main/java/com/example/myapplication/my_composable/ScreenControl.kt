@@ -1,0 +1,80 @@
+package com.example.myapplication.my_composable
+
+import android.util.Log
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.myapplication.my_packets.Show
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.request.get
+import io.ktor.serialization.kotlinx.json.json
+import kotlinx.serialization.json.Json
+
+@Composable
+fun ScreenControl(modifier: Modifier = Modifier){
+
+    val client=remember{
+        HttpClient(CIO){
+            install(ContentNegotiation) {
+                json(Json {
+                    ignoreUnknownKeys = true
+                })
+            }
+        }
+    }
+
+
+    var response by remember{mutableStateOf<List<Show>?>(null)}
+
+    LaunchedEffect(Unit){
+        try{
+            response=client.get("https://api.tvmaze.com/shows?pages=1").body<List<Show>>()
+        }catch(e:Exception){
+            Log.e("TVSHOWS", "ERROR", e)
+            response=null
+        }
+    }
+
+    val navControler= rememberNavController()
+
+    NavHost(navController = navControler, startDestination = "cards"){
+        composable(route = "cards") {
+            WrapperComposable({
+                Cards(modifier = Modifier.padding(it), response = response, navControler = navControler)
+            })
+        }
+        composable(route="show/{id}"){backStackEntry->
+            val id=backStackEntry
+                .arguments
+                ?.getString("id")
+                ?.toIntOrNull()
+
+            val show=response?.find{
+                it.id==id
+            }
+
+            if(show!=null){
+                WrapperComposable({
+                    TVShow(modifier = Modifier.padding(it), show = show)
+                }, backbutton = true, onClick = {
+                    navControler.popBackStack()
+                })
+            }
+        }
+    }
+}
+

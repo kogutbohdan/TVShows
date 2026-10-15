@@ -17,13 +17,13 @@ data class Image(
 data class Show(
 	val id:Int,
 	val url:String,
-	val language:String,
 	val name:String,
 	val rating:Rating,
 	val genres:List<String>,
 	val status:String,
 	val premiered:String,
-	val image:Image
+	val image:Image,
+	val summary: String
 )
 
 @Serializable
