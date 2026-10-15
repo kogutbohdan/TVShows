@@ -5,8 +5,12 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -22,13 +26,16 @@ fun WrapperComposable(children: @Composable (innerPadding: PaddingValues)->Unit,
     Scaffold(modifier = Modifier.fillMaxSize(),topBar={
         TopAppBar(
             title={
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    if(backbutton){
-                        Button(onClick = onClick, modifier = Modifier.padding(end = 20.dp)) {
-                            Text("Back")
-                        }
+                Text("TVShow")
+            },
+            navigationIcon = {
+                if (backbutton) {
+                    IconButton(onClick = onClick) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBackIosNew,
+                            contentDescription = "Назад"
+                        )
                     }
-                    Text("TVShow")
                 }
             }
         )

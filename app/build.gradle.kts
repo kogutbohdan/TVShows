@@ -53,6 +53,7 @@ dependencies {
     implementation("io.ktor:ktor-serialization-kotlinx-json:3.3.0")
     implementation("io.coil-kt.coil3:coil-compose:3.3.0")
     implementation("io.coil-kt.coil3:coil-network-ktor3:3.3.0")
+    implementation("androidx.compose.material:material-icons-extended")
     implementation(libs.androidx.material3)
     testImplementation(libs.junit)
     androidTestImplementation(platform(libs.androidx.compose.bom))
