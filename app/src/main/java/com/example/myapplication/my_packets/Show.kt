@@ -5,7 +5,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Rating(
 	val average:Double?
-)
+)  {
+}
 
 @Serializable
 data class Image(

@@ -15,6 +15,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.myapplication.my_packets.Show
 import com.example.myapplication.view_models.CardsViewModel
+import com.example.myapplication.view_models.SettingsViewModel
 
 
 @Composable
@@ -38,9 +39,9 @@ fun Cards(
 			vm.setCardsState(shows=response)
 		}
 	}
-	
+
 	Column(modifier=modifier){
-		Filters()
+		Filters(vm=vm)
 		Column(horizontalAlignment=Alignment.CenterHorizontally,
 			verticalArrangement=Arrangement.spacedBy(16.dp),
 			modifier=Modifier.fillMaxWidth().verticalScroll(scrollState)){
