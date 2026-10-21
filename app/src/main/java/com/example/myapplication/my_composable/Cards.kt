@@ -15,8 +15,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.myapplication.my_packets.Show
 import com.example.myapplication.view_models.CardsViewModel
-import com.example.myapplication.view_models.SettingsViewModel
-
+import android.util.Log
 
 @Composable
 fun Cards(
@@ -36,7 +35,9 @@ fun Cards(
                 }
             )
 		}else{
+			Log.d("TVShows","$response")
 			vm.setCardsState(shows=response)
+			Log.d("TVShows","${vm.cardsState.shows}")
 		}
 	}
 

@@ -11,7 +11,7 @@ import androidx.compose.runtime.setValue
 
 class SettingsViewModel(app: Application) : AndroidViewModel(app) {
     private val settings= Storege(app)
-    var sortingType by mutableStateOf("rating")
+    var sortingType: String? by mutableStateOf(null)
         private set
     init{
         viewModelScope.launch {
