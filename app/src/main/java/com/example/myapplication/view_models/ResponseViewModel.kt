@@ -10,23 +10,39 @@ import com.example.myapplication.my_packets.RetrofitInstance
 import com.example.myapplication.my_packets.Show
 import com.example.myapplication.my_packets.sort
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
+import java.io.IOException
 
 class ResponseViewModel: ViewModel() {
-    var response: List<Show>? by mutableStateOf(null)
+    var responseState: ResponseState by mutableStateOf(ResponseState())
         private set
 
     init{
+        reloadShows()
+    }
+
+    fun reloadShows(){
+        responseState= responseState.copy(
+            error = null
+        )
         viewModelScope.launch {
             try{
-                response = RetrofitInstance.api.getShows()
-            }catch(e:Exception){
+                responseState= responseState.copy(response = RetrofitInstance.api.getShows())
+            }catch(e: IOException){
                 Log.e("TVSHOWS", "ERROR", e)
-                response = null
+                responseState= responseState.copy(
+                    response = null,
+                    error = "Немає підключення до інтернету"
+                )
+            }catch(e: HttpException){
+                responseState= responseState.copy(
+                    response = null,
+                    error = "Невдалося завантажити серіали спробуйте пізніше"
+                )
             }
         }
     }
-
     fun resort(sortingType: String?){
-        response=sort(response, sortingType = sortingType)
+        responseState=responseState.copy(response=sort(responseState.response, sortingType = sortingType))
     }
 }

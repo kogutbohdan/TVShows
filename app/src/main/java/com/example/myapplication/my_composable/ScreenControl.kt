@@ -1,6 +1,7 @@
 package com.example.myapplication.my_composable
 
 import android.util.Log
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -16,15 +17,15 @@ import com.example.myapplication.view_models.SettingsViewModel
 @Composable
 fun ScreenControl(modifier: Modifier = Modifier, responseVM: ResponseViewModel=viewModel(), vm: SettingsViewModel= viewModel()){
 
-    LaunchedEffect(vm.sortingType) {responseVM.resort(vm.sortingType)}
+    LaunchedEffect(vm.sortingType,responseVM.responseState.response) {responseVM.resort(vm.sortingType)}
 
 
     val navController= rememberNavController()
 
-    NavHost(navController = navController, startDestination = "cards"){
+    NavHost(navController = navController, startDestination = "cards",modifier= Modifier.fillMaxHeight()){
         composable(route = "cards") {
             WrapperComposable({
-                Cards(modifier = Modifier.padding(it), response = responseVM.response, navControler = navController)
+                Cards(modifier = Modifier.padding(it), responseVM = responseVM, navControler = navController)
             },navController=navController)
         }
         composable(route="settings") {
@@ -40,7 +41,7 @@ fun ScreenControl(modifier: Modifier = Modifier, responseVM: ResponseViewModel=v
 
             Log.d("TVShow", "id = $id")
 
-            val show=responseVM.response?.find{
+            val show=responseVM.responseState.response?.find{
                 it.id==id
             }
 

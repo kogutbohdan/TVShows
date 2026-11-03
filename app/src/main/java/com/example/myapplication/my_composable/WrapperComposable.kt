@@ -3,6 +3,7 @@ package com.example.myapplication.my_composable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -26,7 +27,7 @@ import androidx.navigation.NavController
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WrapperComposable(children: @Composable (innerPadding: PaddingValues)->Unit, backbutton: Boolean=false,home: Boolean=true,navController: NavController){
-    Scaffold(modifier = Modifier.fillMaxSize(),topBar={
+    Scaffold(modifier = Modifier.fillMaxSize().fillMaxHeight(),topBar={
         TopAppBar(
             title={
                 Text("TVShow")
